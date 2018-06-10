@@ -79,17 +79,19 @@
 
 
 
-<meta name="description" content="NameCN:余文兵| EN:Francis-Yu | 花名：景闻">
-<meta property="og:type" content="website">
-<meta property="og:title" content="about me">
-<meta property="og:url" content="http://yoursite.com/about/index.html">
+<meta name="description" content="#EOFException引发的storm worker died [TOC] ###1. 引发EOFException某一个执行bolt的task的 调用execute获取数据流，通过getByActionID调用Aerospike，抛出了java.io.EOFException，导致当前的task所在executor的worker died。 ###2.Aerospike的异常栈  3.原因追">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Blog By Jingwen">
+<meta property="og:url" content="http://yoursite.com/2018/06/10/aaa/index.html">
 <meta property="og:site_name" content="Blog By Jingwen">
-<meta property="og:description" content="NameCN:余文兵| EN:Francis-Yu | 花名：景闻">
+<meta property="og:description" content="#EOFException引发的storm worker died [TOC] ###1. 引发EOFException某一个执行bolt的task的 调用execute获取数据流，通过getByActionID调用Aerospike，抛出了java.io.EOFException，导致当前的task所在executor的worker died。 ###2.Aerospike的异常栈  3.原因追">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-06-10T15:14:51.000Z">
+<meta property="og:image" content="http://ohp6i2u5j.bkt.clouddn.com/3bba13f5-d37b-4bfc-8384-eb4d58b157b5.png">
+<meta property="og:updated_time" content="2018-06-10T15:28:05.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="about me">
-<meta name="twitter:description" content="NameCN:余文兵| EN:Francis-Yu | 花名：景闻">
+<meta name="twitter:title" content="Blog By Jingwen">
+<meta name="twitter:description" content="#EOFException引发的storm worker died [TOC] ###1. 引发EOFException某一个执行bolt的task的 调用execute获取数据流，通过getByActionID调用Aerospike，抛出了java.io.EOFException，导致当前的task所在executor的worker died。 ###2.Aerospike的异常栈  3.原因追">
+<meta name="twitter:image" content="http://ohp6i2u5j.bkt.clouddn.com/3bba13f5-d37b-4bfc-8384-eb4d58b157b5.png">
 
 
 
@@ -119,13 +121,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/about/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/06/10/aaa/"/>
 
 
 
 
 
-  <title>about me | Blog By Jingwen</title>
+  <title> | Blog By Jingwen</title>
   
 
 
@@ -250,34 +252,147 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/10/aaa/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="jingwen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog By Jingwen">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-	<h1 class="post-title" itemprop="name headline">about me</h1>
-
-
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
-          <h2 id="Name"><a href="#Name" class="headerlink" title="Name"></a>Name</h2><p>CN:余文兵| EN:Francis-Yu | 花名：景闻</p>
-
+          <h1 class="post-title" itemprop="name headline"></h1>
         
-      </div>
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-10T23:28:05+08:00">
+                2018-06-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
       
+
+      
+        <p>#EOFException引发的storm worker died</p>
+<p>[TOC]</p>
+<p>###1. 引发EOFException<br>某一个执行bolt的task的 调用execute获取数据流，通过getByActionID调用Aerospike，抛出了java.io.EOFException，导致当前的task所在executor的worker died。</p>
+<p>###2.Aerospike的异常栈<br> <img src="http://ohp6i2u5j.bkt.clouddn.com/3bba13f5-d37b-4bfc-8384-eb4d58b157b5.png" alt="流程图"></p>
+<h3 id="3-原因追踪"><a href="#3-原因追踪" class="headerlink" title="3.原因追踪"></a>3.原因追踪</h3><p> 追溯 MultiCommand.readBytes 代码如下：<br> <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@requires_authorization</span></span><br><span class="line">   protected final void readBytes(int length) throws IOException &#123;</span><br><span class="line">               <span class="keyword">if</span> (length &gt; dataBuffer.length) &#123;</span><br><span class="line">                               // Corrupted data streams can result <span class="keyword">in</span> a huge length.</span><br><span class="line">                               // Do a sanity check here.</span><br><span class="line">                               <span class="keyword">if</span> (length &gt; MAX_BUFFER_SIZE) &#123;</span><br><span class="line">                                                   throw new IllegalArgumentException(<span class="string">"Invalid readBytes length: "</span> + length);</span><br><span class="line">                                                               &#125;</span><br><span class="line">                                           dataBuffer = new byte[length];</span><br><span class="line">                                                   &#125;</span><br><span class="line">                       </span><br><span class="line">                       int pos = <span class="number">0</span>;</span><br><span class="line">                               </span><br><span class="line">                               <span class="keyword">while</span> (pos &lt; length) &#123;</span><br><span class="line">                                               int count = bis.read(dataBuffer, pos, length - pos);</span><br><span class="line">                                                           </span><br><span class="line">                                                           <span class="keyword">if</span> (count &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                                                                               throw new EOFException();</span><br><span class="line">                                                                                           &#125;</span><br><span class="line">                                                                       pos += count;</span><br><span class="line">                                                                               &#125;       </span><br><span class="line">                                       dataOffset += length;</span><br><span class="line">                                           &#125;</span><br></pre></td></tr></table></figure></p>
+<p>readByte方法自身就会throws IOException，但是实际上却抛出EOFException，表明进入方法内，bis.read方法返回了-1.<br>根据javadoc说明：</p>
+<blockquote>
+<p>EOFException:Signals that an end of file or end of stream has been reached unexpectedly during input<br>IOException - the stream has been closed and the contained input stream does not support reading after close, or another I/O error occurs.</p>
+</blockquote>
+<p>可以得出：在正常的input stream读取的时候，却读到了流的末尾，返回了-1.</p>
+
       
     </div>
     
     
     
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/06/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -372,7 +487,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Name"><span class="nav-number">1.</span> <span class="nav-text">Name</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-原因追踪"><span class="nav-number">1.</span> <span class="nav-text">3.原因追踪</span></a></li></ol></div>
             
 
           </div>
