@@ -330,18 +330,17 @@
       
         
           
-            <p>#EOFException引发的storm worker died</p>
-<p>[TOC]</p>
-<p>###1. 引发EOFException<br>某一个执行bolt的task的 调用execute获取数据流，通过getByActionID调用Aerospike，抛出了java.io.EOFException，导致当前的task所在executor的worker died。</p>
-<p>###2.Aerospike的异常栈<br> <img src="http://ohp6i2u5j.bkt.clouddn.com/3bba13f5-d37b-4bfc-8384-eb4d58b157b5.png" alt="流程图"></p>
-<h3 id="3-原因追踪"><a href="#3-原因追踪" class="headerlink" title="3.原因追踪"></a>3.原因追踪</h3><p> 追溯 MultiCommand.readBytes 代码如下：<br> <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@requires_authorization</span></span><br><span class="line">   protected final void readBytes(int length) throws IOException &#123;</span><br><span class="line">               <span class="keyword">if</span> (length &gt; dataBuffer.length) &#123;</span><br><span class="line">                               // Corrupted data streams can result <span class="keyword">in</span> a huge length.</span><br><span class="line">                               // Do a sanity check here.</span><br><span class="line">                               <span class="keyword">if</span> (length &gt; MAX_BUFFER_SIZE) &#123;</span><br><span class="line">                                                   throw new IllegalArgumentException(<span class="string">"Invalid readBytes length: "</span> + length);</span><br><span class="line">                                                               &#125;</span><br><span class="line">                                           dataBuffer = new byte[length];</span><br><span class="line">                                                   &#125;</span><br><span class="line">                       </span><br><span class="line">                       int pos = <span class="number">0</span>;</span><br><span class="line">                               </span><br><span class="line">                               <span class="keyword">while</span> (pos &lt; length) &#123;</span><br><span class="line">                                               int count = bis.read(dataBuffer, pos, length - pos);</span><br><span class="line">                                                           </span><br><span class="line">                                                           <span class="keyword">if</span> (count &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                                                                               throw new EOFException();</span><br><span class="line">                                                                                           &#125;</span><br><span class="line">                                                                       pos += count;</span><br><span class="line">                                                                               &#125;       </span><br><span class="line">                                       dataOffset += length;</span><br><span class="line">                                           &#125;</span><br></pre></td></tr></table></figure></p>
-<p>readByte方法自身就会throws IOException，但是实际上却抛出EOFException，表明进入方法内，bis.read方法返回了-1.<br>根据javadoc说明：</p>
-<blockquote>
-<p>EOFException:Signals that an end of file or end of stream has been reached unexpectedly during input<br>IOException - the stream has been closed and the contained input stream does not support reading after close, or another I/O error occurs.</p>
-</blockquote>
-<p>可以得出：在正常的input stream读取的时候，却读到了流的末尾，返回了-1.</p>
-
-          
+          #EOFException引发的storm worker died
+[TOC]
+###1. 引发EOFException某一个执行bolt的task的 调用execute获取数据流，通过getByActionID调用Aerospike，抛出了java.io.EOFException，导致当前的tas
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/06/10/aaa/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -459,17 +458,15 @@
       
         
           
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-          
+          Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in 
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/06/06/hello-world/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
